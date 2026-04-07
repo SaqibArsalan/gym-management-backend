@@ -1,19 +1,14 @@
 package com.gym.ai.service
 
+import com.gym.ai.gateway.OpenAIServiceClient
 import com.gym.ai.controller.dto.ChatRequest
 import com.gym.ai.controller.dto.Message
 import org.springframework.stereotype.Service
-import org.springframework.web.reactive.function.client.WebClient
 
 @Service
-class AIService(builder: WebClient.Builder) {
+class AIService(private val openAIClient: OpenAIServiceClient) {
 
-    private val webClient: WebClient = builder
-        .baseUrl("https://api.openai.com/v1")
-        .build()
-
-    fun chat(userMessage: String): String? {
-
+    fun chat(userMessage: String): Message? {
         val request = ChatRequest(
             model = "gpt-4o-mini",
             messages = listOf(
@@ -21,19 +16,12 @@ class AIService(builder: WebClient.Builder) {
                 Message("user", userMessage)
             )
         )
-        try {
-            return webClient.post()
-                .uri("/chat/completions")
-                .header("Content-Type", "application/json") // ✅ IMPORTANT
-                .bodyValue(request)
-                .retrieve()
-                .bodyToMono(String::class.java)
-                .block()
-
+        return try {
+            openAIClient.chat(request).choices.firstOrNull()?.message
         } catch (e: Exception) {
             e.printStackTrace()
-            return "Sorry, I couldn't process your request at the moment."
+            null
         }
-
     }
+
 }
