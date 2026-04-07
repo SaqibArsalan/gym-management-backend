@@ -5,8 +5,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Bean
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories
+import org.springframework.cloud.openfeign.EnableFeignClients
 
+
+@EnableFeignClients(basePackages = ["com.gym"])
 @SpringBootApplication(scanBasePackages = ["com.gym"])
 class GymManagementApplication {
 
