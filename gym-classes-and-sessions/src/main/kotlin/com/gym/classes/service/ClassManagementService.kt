@@ -1,6 +1,6 @@
 package com.gym.classes.service
 
-import com.gym.com.gym.classes.Repository.ClassManagementRepository
+import com.gym.classes.repository.ClassManagementRepository
 import com.gym.com.gym.classes.controller.dto.ClassDto
 import com.gym.com.gym.classes.controller.dto.ClassResponseDto
 import com.gym.com.gym.classes.exception.FailedToCreateClassException

@@ -1,7 +1,7 @@
 package com.gym.com.gym.classes.service
 
-import com.gym.com.gym.classes.Repository.ClassManagementRepository
-import com.gym.com.gym.classes.Repository.SessionManagementRepository
+import com.gym.classes.repository.ClassManagementRepository
+import com.gym.classes.repository.SessionManagementRepository
 import com.gym.com.gym.classes.controller.dto.ClassResponseDto
 import com.gym.com.gym.classes.controller.dto.SessionCreateOrUpdateDto
 import com.gym.com.gym.classes.controller.dto.SessionResponseDto
@@ -14,7 +14,8 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class SessionManagementService(private val sessionRepository: SessionManagementRepository,
-                                private val classManagementRepository: ClassManagementRepository) {
+                               private val classManagementRepository: ClassManagementRepository
+) {
 
     @Transactional
     fun createSessionForClass(sessionCreateOrUpdateDto: SessionCreateOrUpdateDto, classId: String): SessionResponseDto {
