@@ -1,7 +1,7 @@
 package com.gym.com.gym.classes.service
 
 import com.gym.classes.repository.ClassManagementRepository
-import com.gym.classes.repository.SessionManagementRepository
+import com.gym.com.gym.classes.Repository.SessionManagementRepository
 import com.gym.com.gym.classes.controller.dto.ClassResponseDto
 import com.gym.com.gym.classes.controller.dto.SessionCreateOrUpdateDto
 import com.gym.com.gym.classes.controller.dto.SessionResponseDto

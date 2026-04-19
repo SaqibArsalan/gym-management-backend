@@ -1,11 +1,8 @@
 package com.gym.com.gym.classes.controller
 
+import com.gym.classes.controller.dto.EnrollmentResponseDto
 import com.gym.com.gym.classes.controller.dto.EnrollmentRequestDto
-import com.gym.com.gym.classes.controller.dto.EnrollmentResponseDto
-import com.gym.com.gym.classes.controller.dto.SessionCreateOrUpdateDto
-import com.gym.com.gym.classes.controller.dto.SessionResponseDto
 import com.gym.com.gym.classes.service.EnrollmentService
-import com.gym.com.gym.classes.service.SessionManagementService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping

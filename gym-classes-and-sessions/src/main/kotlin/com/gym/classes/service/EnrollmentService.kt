@@ -1,10 +1,10 @@
 package com.gym.com.gym.classes.service
 
-import com.gym.classes.repository.SessionManagementRepository
+import com.gym.classes.controller.dto.EnrollmentResponseDto
+import com.gym.classes.model.Enrollment
+import com.gym.com.gym.classes.Repository.SessionManagementRepository
 import com.gym.com.gym.classes.client.MembershipClient
 import com.gym.com.gym.classes.controller.dto.EnrollmentRequestDto
-import com.gym.com.gym.classes.controller.dto.EnrollmentResponseDto
-import com.gym.com.gym.classes.model.Enrollment
 import com.gym.com.gym.classes.repository.EnrollmentRepository
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service

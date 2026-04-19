@@ -28,7 +28,8 @@
 		<module>gym-classes-and-sessions</module>
         <module>gym-staff</module>
         <module>gym-ai</module>
-    </modules>
+		<module>gym-attendance</module>
+	</modules>
 	<scm>
 		<connection/>
 		<developerConnection/>
