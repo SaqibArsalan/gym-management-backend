@@ -1,8 +1,7 @@
 package com.gym.com.gym.classes.repository
 
-import com.gym.com.gym.classes.model.Enrollment
-import com.gym.com.gym.classes.model.GymClass
-import com.gym.com.gym.classes.model.Session
+
+import com.gym.classes.model.Enrollment
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
