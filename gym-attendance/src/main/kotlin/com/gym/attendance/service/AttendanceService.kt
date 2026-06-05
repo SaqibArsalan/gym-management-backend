@@ -11,6 +11,7 @@ import com.gym.attendance.client.StaffFeignClient
 import com.gym.attendance.client.MembershipFeignClient
 import com.gym.attendance.exception.FailedToCreateCheckInException
 import com.gym.attendance.model.toResponseDto
+
 import com.gym.com.gym.attendance.exception.NoActiveMembershipException
 import com.gym.com.gym.attendance.exception.UserAlreadyCheckedInException
 import org.springframework.http.HttpStatus
