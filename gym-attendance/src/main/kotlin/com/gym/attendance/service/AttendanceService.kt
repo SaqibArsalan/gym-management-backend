@@ -11,6 +11,8 @@ import com.gym.attendance.client.StaffFeignClient
 import com.gym.attendance.client.MembershipFeignClient
 import com.gym.attendance.exception.FailedToCreateCheckInException
 import com.gym.attendance.model.toResponseDto
+import com.gym.com.gym.attendance.exception.NoActiveMembershipException
+import com.gym.com.gym.attendance.exception.UserAlreadyCheckedInException
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -48,10 +50,7 @@ class AttendanceService(
 
                     if (!hasActiveMembership) {
                         val latestExpiry = memberships.mapNotNull { it?.expiryDate }.maxOrNull()
-                        throw ResponseStatusException(
-                            HttpStatus.UNPROCESSABLE_ENTITY,
-                            "All memberships expired. Latest expiry: $latestExpiry"
-                        )
+                        throw NoActiveMembershipException(latestExpiry.toString())
                     }
                 }
 
@@ -66,7 +65,7 @@ class AttendanceService(
             // Duplicate active check-in guard
             val alreadyCheckedIn = attendanceRepository.existsByUserIdAndCheckOutTimeIsNull(request.userId)
             if (alreadyCheckedIn) {
-                throw ResponseStatusException(HttpStatus.CONFLICT, "User already has an active check-in")
+                throw UserAlreadyCheckedInException()
             }
 
             val attendance = attendanceRepository.save(
@@ -82,7 +81,11 @@ class AttendanceService(
             return attendance.toResponseDto()
 
         } catch (ex: FailedToCreateCheckInException) {
-            throw FailedToCreateCheckInException()
+            throw ex
+        } catch (ex: UserAlreadyCheckedInException) {
+            throw ex
+        } catch (ex: NoActiveMembershipException) {
+            throw ex
         }
     }
 
