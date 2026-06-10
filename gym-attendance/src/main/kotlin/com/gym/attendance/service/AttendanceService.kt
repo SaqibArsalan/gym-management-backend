@@ -90,5 +90,10 @@ class AttendanceService(
         }
     }
 
+    fun getAllAttendances(date: String): List<AttendanceResponseDto> {
+        val attendances = attendanceRepository.findAll().filter { it.checkInTime.toLocalDate().toString() == date }
+        return attendances.map { it.toResponseDto() }
+    }
+
 
 }
