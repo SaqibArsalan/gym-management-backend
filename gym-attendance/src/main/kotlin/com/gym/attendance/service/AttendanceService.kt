@@ -9,8 +9,10 @@ import com.gym.attendance.model.GymAttendance
 import com.gym.attendance.client.UserFeignClient
 import com.gym.attendance.client.StaffFeignClient
 import com.gym.attendance.client.MembershipFeignClient
+import com.gym.attendance.exception.AlreadyCheckedOutException
 import com.gym.attendance.exception.FailedToCreateCheckInException
 import com.gym.attendance.exception.FailedToFetchMembershipForUserException
+import com.gym.attendance.exception.FailedToFetchVisitByIdException
 import com.gym.attendance.model.toResponseDto
 
 import com.gym.com.gym.attendance.exception.NoActiveMembershipException
@@ -101,6 +103,29 @@ class AttendanceService(
     fun getTodayStats(): Int {
         val today = LocalDate.now()
         return attendanceRepository.findAll().count { it.checkInTime.toLocalDate() == today }
+    }
+
+    @Transactional
+    fun checkOut(visitId: String): AttendanceResponseDto {
+
+        try {
+            val attendance = attendanceRepository.findById(visitId).orElseThrow {
+                FailedToFetchVisitByIdException(visitId)
+            }
+
+            if (attendance.checkOutTime != null) {
+                throw AlreadyCheckedOutException()
+            }
+
+            attendance.checkOutTime = LocalDateTime.now()
+            return attendanceRepository.save(attendance).toResponseDto()
+
+        } catch (ex: AlreadyCheckedOutException) {
+            throw ex
+        } catch (ex: FailedToFetchVisitByIdException) {
+            throw ex
+        }
+
     }
 
 
