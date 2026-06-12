@@ -26,4 +26,8 @@ class AttendanceController(private val attendanceService: AttendanceService) {
     fun getAllAttendances(@RequestParam date: String): ResponseEntity<List<AttendanceResponseDto>> =
         ResponseEntity(attendanceService.getAllAttendances(date), HttpStatus.OK)
 
+    @GetMapping("/stats/today")
+    fun getTodayStats(): ResponseEntity<Int> =
+        ResponseEntity(attendanceService.getTodayStats(), HttpStatus.OK)
+
 }

@@ -10,6 +10,7 @@ import com.gym.attendance.client.UserFeignClient
 import com.gym.attendance.client.StaffFeignClient
 import com.gym.attendance.client.MembershipFeignClient
 import com.gym.attendance.exception.FailedToCreateCheckInException
+import com.gym.attendance.exception.FailedToFetchMembershipForUserException
 import com.gym.attendance.model.toResponseDto
 
 import com.gym.com.gym.attendance.exception.NoActiveMembershipException
@@ -43,7 +44,7 @@ class AttendanceService(
                     val memberships = membershipFeignClient.getMembershipByUserId(user.id)
 
                     if (memberships.isEmpty()) {
-                        throw ResponseStatusException(HttpStatus.NOT_FOUND, "No membership found for userId: ${request.userId}")
+                        throw FailedToFetchMembershipForUserException(user.firstName)
                     }
 
                     // Check if at least one membership is still active
@@ -87,12 +88,19 @@ class AttendanceService(
             throw ex
         } catch (ex: NoActiveMembershipException) {
             throw ex
+        } catch (ex: FailedToFetchMembershipForUserException) {
+            throw ex
         }
     }
 
     fun getAllAttendances(date: String): List<AttendanceResponseDto> {
         val attendances = attendanceRepository.findAll().filter { it.checkInTime.toLocalDate().toString() == date }
         return attendances.map { it.toResponseDto() }
+    }
+
+    fun getTodayStats(): Int {
+        val today = LocalDate.now()
+        return attendanceRepository.findAll().count { it.checkInTime.toLocalDate() == today }
     }
 
 
