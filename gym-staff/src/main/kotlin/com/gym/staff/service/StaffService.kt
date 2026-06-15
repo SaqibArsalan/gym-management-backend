@@ -23,17 +23,27 @@ class StaffService(private val staffRepository: StaffRepository) {
         }
     }
 
+    fun updateStaff(staffId: String, addOrUpdateStaff: CreateOrUpdateStaffDto): StaffResponseDto {
+        try {
+            val existingStaff = staffRepository.findByUserId(staffId)
+            val updatedStaff = Staff.updateFrom(existingStaff, addOrUpdateStaff)
+            val savedStaff = staffRepository.save(updatedStaff)
+            return StaffResponseDto.createFrom(savedStaff)
+        } catch (ex: Exception) {
+            throw FailedToCreateStaffException()
+        }
+    }
+
     fun getAllStaff(): List<StaffResponseDto> {
         try {
             val staffList = staffRepository.findAll()
             return staffList.map {
                 staff -> StaffResponseDto(
                 staff.id!!,
-
-                    staff.userId,
-                    staff.name,
-                    staff.salary,
-                    staff.hireDate
+                staff.userId,
+                staff.name,
+                staff.salary,
+                staff.hireDate
                 )
             }
         } catch (ex: Exception) {

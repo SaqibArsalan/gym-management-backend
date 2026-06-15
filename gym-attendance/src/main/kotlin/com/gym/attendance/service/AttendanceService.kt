@@ -15,6 +15,7 @@ import com.gym.attendance.exception.FailedToCreateCheckInException
 import com.gym.attendance.exception.FailedToFetchMembershipForUserException
 import com.gym.attendance.exception.FailedToFetchVisitByIdException
 import com.gym.attendance.model.toResponseDto
+import com.gym.com.gym.attendance.exception.FailedToFetchStaffException
 
 import com.gym.com.gym.attendance.exception.NoActiveMembershipException
 import com.gym.com.gym.attendance.exception.UserAlreadyCheckedInException
@@ -61,9 +62,8 @@ class AttendanceService(
 
                 AttendeeType.STAFF -> {
                     // Validate user is actually a staff member via Feign client
-                    val staff = staffFeignClient.getStaffByUserId(request.userId)
-                        ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "No staff record found for userId: ${request.userId}")
-                    // No membership check needed for staff
+                    staffFeignClient.getStaffByUserId(request.userId)
+                        ?: throw FailedToFetchStaffException()
                 }
             }
 
@@ -93,6 +93,10 @@ class AttendanceService(
             throw ex
         } catch (ex: FailedToFetchMembershipForUserException) {
             throw ex
+        } catch (ex: FailedToFetchStaffException) {
+            throw ex
+        } catch (ex: Exception) {
+            throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred during check-in", ex)
         }
     }
 

@@ -1,6 +1,7 @@
 package com.gym.staff.model
 
 import com.gym.com.gym.staff.controller.dto.CreateOrUpdateStaffDto
+import com.gym.com.gym.staff.controller.dto.StaffResponseDto
 import jakarta.persistence.*
 import java.time.LocalDate
 
@@ -29,6 +30,21 @@ data class Staff(
                 name = staffDto.name,
                 salary = staffDto.salary,
                 hireDate = staffDto.hireDate,
+            )
+        }
+        fun updateFrom(existingStaff: Staff, staffDto: CreateOrUpdateStaffDto): Staff {
+            return existingStaff.copy(
+                name = staffDto.name,
+                salary = staffDto.salary,
+                hireDate = staffDto.hireDate
+            ).also { it.id = existingStaff.id }
+        }
+        fun toStaff(staffResponseDto: StaffResponseDto): Staff {
+            return Staff(
+                userId = staffResponseDto.userId,
+                name = staffResponseDto.name,
+                salary = staffResponseDto.salary,
+                hireDate = staffResponseDto.hireDate,
             )
         }
     }

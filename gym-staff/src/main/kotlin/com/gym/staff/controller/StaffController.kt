@@ -16,6 +16,11 @@ class StaffController(val staffService: StaffService) {
     fun createStaff(@RequestBody createOrUpdateStaffDto: CreateOrUpdateStaffDto): ResponseEntity<StaffResponseDto> {
         return ResponseEntity(staffService.createStaff(createOrUpdateStaffDto), HttpStatus.CREATED)
     }
+    
+    @PatchMapping("/{userId}")
+    fun updateStaff(@PathVariable("userId") userId: String, @RequestBody createOrUpdateStaffDto: CreateOrUpdateStaffDto): ResponseEntity<StaffResponseDto> {
+        return ResponseEntity(staffService.updateStaff(userId, createOrUpdateStaffDto), HttpStatus.OK)
+    }
 
     @GetMapping
     fun getAllStaff(): ResponseEntity<List<StaffResponseDto>> {

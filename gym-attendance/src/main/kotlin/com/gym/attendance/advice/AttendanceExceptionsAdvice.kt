@@ -3,6 +3,7 @@ package com.gym.attendance.advice
 import com.gym.attendance.exception.AlreadyCheckedOutException
 import com.gym.attendance.exception.FailedToCreateCheckInException
 import com.gym.attendance.exception.FailedToFetchMembershipForUserException
+import com.gym.com.gym.attendance.exception.FailedToFetchStaffException
 import com.gym.com.gym.attendance.exception.NoActiveMembershipException
 import com.gym.com.gym.attendance.exception.UserAlreadyCheckedInException
 import org.apache.logging.log4j.LogManager
@@ -62,6 +63,16 @@ class AttendanceExceptionsAdvice {
 
     @ExceptionHandler(AlreadyCheckedOutException::class)
     fun handlerForAlreadyCheckedOutException(ex: AlreadyCheckedOutException): ResponseEntity<Any> {
+        val errors: MutableList<String> = Collections.singletonList(ex.message)
+        logger.error(errorMessage, ex.javaClass.name, errors.joinToString(","), ex)
+        return ResponseEntity(
+            mapOf("errors" to ex.message),
+            HttpStatus.BAD_REQUEST
+        )
+    }
+
+    @ExceptionHandler(FailedToFetchStaffException::class)
+    fun handlerForFailedToFetchStaffException(ex: FailedToFetchStaffException): ResponseEntity<Any> {
         val errors: MutableList<String> = Collections.singletonList(ex.message)
         logger.error(errorMessage, ex.javaClass.name, errors.joinToString(","), ex)
         return ResponseEntity(
