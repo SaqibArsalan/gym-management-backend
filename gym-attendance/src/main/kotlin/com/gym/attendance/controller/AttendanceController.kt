@@ -2,6 +2,7 @@ package com.gym.attendance.controller
 
 import com.gym.attendance.controller.dto.CheckInRequestDto
 import com.gym.attendance.controller.dto.AttendanceResponseDto
+import com.gym.attendance.controller.dto.AttendanceTodayStatsDto
 import com.gym.attendance.service.AttendanceService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -28,7 +29,7 @@ class AttendanceController(private val attendanceService: AttendanceService) {
         ResponseEntity(attendanceService.getAllAttendances(date), HttpStatus.OK)
 
     @GetMapping("/stats/today")
-    fun getTodayStats(): ResponseEntity<Int> =
+    fun getTodayStats(): ResponseEntity<AttendanceTodayStatsDto> =
         ResponseEntity(attendanceService.getTodayStats(), HttpStatus.OK)
 
     @PatchMapping("/{visitId}/check-out")

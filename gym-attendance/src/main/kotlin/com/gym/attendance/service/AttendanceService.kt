@@ -9,6 +9,7 @@ import com.gym.attendance.model.GymAttendance
 import com.gym.attendance.client.UserFeignClient
 import com.gym.attendance.client.StaffFeignClient
 import com.gym.attendance.client.MembershipFeignClient
+import com.gym.attendance.controller.dto.AttendanceTodayStatsDto
 import com.gym.attendance.exception.AlreadyCheckedOutException
 import com.gym.attendance.exception.FailedToCreateCheckInException
 import com.gym.attendance.exception.FailedToFetchMembershipForUserException
@@ -100,9 +101,11 @@ class AttendanceService(
         return attendances.map { it.toResponseDto() }
     }
 
-    fun getTodayStats(): Int {
+    fun getTodayStats(): AttendanceTodayStatsDto {
         val today = LocalDate.now()
-        return attendanceRepository.findAll().count { it.checkInTime.toLocalDate() == today }
+        val presentToday = attendanceRepository.findAll().count { it.checkInTime.toLocalDate() == today }
+        val currentlyInside = attendanceRepository.findAll().count { it.checkInTime.toLocalDate() == today && it.checkOutTime == null }
+        return AttendanceTodayStatsDto(presentToday = presentToday, currentlyInside = currentlyInside)
     }
 
     @Transactional
