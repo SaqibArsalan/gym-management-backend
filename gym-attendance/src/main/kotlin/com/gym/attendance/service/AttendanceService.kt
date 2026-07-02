@@ -68,7 +68,11 @@ class AttendanceService(
             }
 
             // Duplicate active check-in guard
-            val alreadyCheckedIn = attendanceRepository.existsByUserIdAndCheckOutTimeIsNull(request.userId)
+            val startOfToday = LocalDate.now().atStartOfDay()
+            val endOfToday = LocalDate.now().atTime(23, 59, 59)
+            val alreadyCheckedIn = attendanceRepository.existsByUserIdAndCheckInTimeBetweenAndCheckOutTimeIsNull(
+                request.userId, startOfToday, endOfToday
+            )
             if (alreadyCheckedIn) {
                 throw UserAlreadyCheckedInException()
             }

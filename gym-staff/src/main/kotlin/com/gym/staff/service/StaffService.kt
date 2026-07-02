@@ -25,7 +25,7 @@ class StaffService(private val staffRepository: StaffRepository) {
 
     fun updateStaff(staffId: String, addOrUpdateStaff: CreateOrUpdateStaffDto): StaffResponseDto {
         try {
-            val existingStaff = staffRepository.findByUserId(staffId)
+            val existingStaff = getStaffByUserId(staffId)
             val updatedStaff = Staff.updateFrom(existingStaff, addOrUpdateStaff)
             val savedStaff = staffRepository.save(updatedStaff)
             return StaffResponseDto.createFrom(savedStaff)
@@ -53,7 +53,7 @@ class StaffService(private val staffRepository: StaffRepository) {
 
     fun getStaff(userId: String): StaffResponseDto {
         try {
-            val staff = staffRepository.findByUserId(userId)
+            val staff = getStaffByUserId(userId)
             return StaffResponseDto(
                 staff.id!!,
                 staff.userId,
@@ -61,6 +61,14 @@ class StaffService(private val staffRepository: StaffRepository) {
                 staff.salary,
                 staff.hireDate
             )
+        } catch (ex: Exception) {
+            throw FailedToFetchStaffForIdException(userId)
+        }
+    }
+
+    fun getStaffByUserId(userId: String): Staff {
+        try {
+            return staffRepository.findByUserId(userId)
         } catch (ex: Exception) {
             throw FailedToFetchStaffForIdException(userId)
         }
