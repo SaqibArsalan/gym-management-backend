@@ -1,6 +1,7 @@
 package com.gym.ai.context
 
 import com.gym.com.gym.ai.gateway.AttendanceFeignClient
+import com.gym.com.gym.ai.gateway.MembershipFeignClient
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.time.LocalDate
@@ -15,7 +16,8 @@ import java.time.LocalTime
  */
 @Component
 class GymContextProvider(
-    private val attendanceFeignClient: AttendanceFeignClient
+    private val attendanceFeignClient: AttendanceFeignClient,
+    private val membershipFeignClient: MembershipFeignClient
     // Add new Feign clients here, e.g.:
     // private val sessionsFeignClient: SessionsFeignClient,
     // private val membershipFeignClient: MembershipFeignClient,
@@ -30,6 +32,7 @@ class GymContextProvider(
             appendLine("=== LIVE GYM DATA (as of $today $timeNow) ===")
             appendLine()
             appendAttendanceContext()
+            appendMembershipContext()
             // Add more sections here as you add more Feign clients, e.g.:
             // appendSessionsContext()
             // appendMembershipContext()
@@ -48,6 +51,15 @@ class GymContextProvider(
         } else {
             appendLine("Attendance: data unavailable.")
         }
+        appendLine()
+    }
+    private fun StringBuilder.appendMembershipContext() {
+        val stats = runCatching { membershipFeignClient.getNewSignupsForCurrentMonth() }
+            .onFailure { logger.error("[GymContextProvider] Failed to fetch membership stats: ${it.message}", it) }
+            .getOrElse { 0 }
+
+        appendLine("Membership:")
+        appendLine("- New sign-ups this month: $stats")
         appendLine()
     }
 }
