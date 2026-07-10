@@ -16,6 +16,11 @@ class MembershipSubscriptionController(val membershipSubscriptionService: Member
         return ResponseEntity(membershipSubscriptionService.addMembershipSubscription(memberDto), HttpStatus.CREATED)
     }
 
+    @PatchMapping("/{id}")
+    fun updateMembershipSubscription(@PathVariable id: String, @RequestBody memberDto: MemberDto): ResponseEntity<MemberDto> {
+        return ResponseEntity(membershipSubscriptionService.updateMembershipSubscription(id, memberDto), HttpStatus.OK)
+    }
+
     @GetMapping
     fun getMembershipSubscriptions(): ResponseEntity<List<ActiveMembershipDto>> {
         return ResponseEntity(membershipSubscriptionService.getMembershipsSubscriptions(), HttpStatus.OK)

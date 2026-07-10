@@ -20,6 +20,9 @@ data class MembershipSubscription(
     @Column(name = "expiry_date")
     val expiryDate: LocalDate = LocalDate.now(),
 
+    @Column(name = "duration_in_months")
+    val durationInMonths: Int = 0,
+
     @Column(name = "status")
     val status: String = "ACTIVE",
 
@@ -38,6 +41,17 @@ data class MembershipSubscription(
                 expiryDate = calculateExpiryDate(memberDto.joinDate, memberDto.durationInMonths),
                 membershipPlan = membershipPlan,
             )
+        }
+
+        fun updateFrom(existingMembership: MembershipSubscription, memberDto: MemberDto, membershipPlan: MembershipPlans): MembershipSubscription {
+            return existingMembership.copy(
+                userId = memberDto.userId,
+                memberName = memberDto.memberName,
+                joinDate = memberDto.joinDate,
+                expiryDate = calculateExpiryDate(memberDto.joinDate, memberDto.durationInMonths),
+                durationInMonths = memberDto.durationInMonths,
+                membershipPlan = membershipPlan
+            ).also { it.id = existingMembership.id }
         }
 
         fun calculateExpiryDate(joinDate: LocalDate, durationInMonths: Int): LocalDate {

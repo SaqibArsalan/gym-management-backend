@@ -33,20 +33,32 @@ class MembershipSubscriptionService(
         }
     }
 
+    fun updateMembershipSubscription(id: String, memberDto: MemberDto): MemberDto {
+        try {
+            val existingMembership = membershipSubscriptionRepository.findById(id).orElseThrow {
+                FailedToFetchMembershipDetailsForIdException(id)
+            }
+            val membershipPlan = membershipPlanRepository.findById(memberDto.membershipPlanId).orElseThrow {
+                FailedToFetchMembershipPlanForIdException(memberDto.membershipPlanId)
+            }
+            val updatedMembership = MembershipSubscription.updateFrom(existingMembership, memberDto, membershipPlan)
+            membershipSubscriptionRepository.save(updatedMembership)
+            return memberDto
+        } catch (ex: FailedToFetchMembershipDetailsForIdException) {
+            throw ex
+        } catch (ex: FailedToFetchMembershipPlanForIdException) {
+            throw ex
+        } catch (e: Exception) {
+            throw FailedToUpdateMemberException()
+        }
+    }
+
     fun getActiveMemberships(userId: String): List<ActiveMembershipDto> {
         try {
             val activeMemberships = membershipSubscriptionRepository.findActiveMembershipsByUserId(userId)
 
             return activeMemberships.map {
-                    membership -> ActiveMembershipDto(
-                membership.id!!,
-                membership.userId,
-                membership.membershipPlan.id!!,
-                membership.memberName,
-                membership.joinDate,
-                membership.expiryDate,
-                membership.membershipPlan.name,
-                membership.membershipPlan.price)
+                    ActiveMembershipDto.createFrom(it)
             }
         } catch (ex: Exception) {
             throw FailedToFetchActiveMembershipsExceptionForUser(userId)
@@ -59,17 +71,9 @@ class MembershipSubscriptionService(
             val membershipList = membershipSubscriptionRepository.findDistinctActiveMemberships()
 
             return membershipList.map {
-                    membership -> ActiveMembershipDto(
-                membership.id!!,
-                membership.userId,
-                membership.membershipPlan.id!!,
-                membership.memberName,
-                membership.joinDate,
-                membership.expiryDate,
-                membership.membershipPlan.name,
-                membership.membershipPlan.price
-            )
+                ActiveMembershipDto.createFrom(it)
             }
+
         } catch (ex: Exception) {
             throw FailedToFetchMembershipSubscriptionsException()
         }

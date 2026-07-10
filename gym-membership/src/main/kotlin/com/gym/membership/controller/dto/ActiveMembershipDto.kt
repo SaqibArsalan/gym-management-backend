@@ -13,7 +13,8 @@ data class ActiveMembershipDto(
     val joinDate: LocalDate,
     val expiryDate: LocalDate,
     val membershipPlanName: String,
-    val price: Double
+    val price: Double,
+    val durationInMonths: Int
 ) {
     companion object {
         fun createFrom(membershipSubscription: MembershipSubscription): ActiveMembershipDto {
@@ -25,7 +26,8 @@ data class ActiveMembershipDto(
                 joinDate = membershipSubscription.joinDate,
                 expiryDate = membershipSubscription.expiryDate,
                 membershipPlanName = membershipSubscription.membershipPlan.name,
-                price = membershipSubscription.membershipPlan.price
+                price = membershipSubscription.membershipPlan.price,
+                durationInMonths = membershipSubscription.membershipPlan.durationInMonths
             )
         }
     }
